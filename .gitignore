@@ -1,0 +1,7 @@
+*.png
+*.pyc
+*~
+MANIFEST
+/dist
+/build
+
