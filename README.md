@@ -7,10 +7,12 @@ I initially thought of creating an extension to help with the situation. Unfortu
 
 Hence `pyscrape` and its http sibling `pyrun`. Hope it helps you navigate the unwieldy world of javascript rendering :) .
 
+PyPI package - [scrapejs](https://pypi.python.org/pypi/scrapejs)
+
 
 ## Installation
 
-pip install pyscrape
+pip install scrapejs
 
 OR
 
@@ -24,4 +26,4 @@ OR
 2. pyrun -p 1234; curl localhost:1234/scrape?url=http://www.google.co.in/
 
 
-Improvements are welcome.
+Improvements are welcome
