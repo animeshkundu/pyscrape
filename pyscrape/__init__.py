@@ -7,15 +7,21 @@ from http import run_server
 def cli():
     parser = argparse.ArgumentParser(description="Download Javscript rendered web pages")
     parser.add_argument("url", help="The url to download after rendering")
-    xvfb.start_xvfb()
-    s = session.Session()
-    s.visit(url)
-    print s.body()
+    args = parser.parse_args()
+
+    start_xvfb()
+    s = Session()
+    s.visit(args.url)
+    print s.body().encode("utf8")
+
 
 def http() :
     parser = argparse.ArgumentParser(description="Download Javscript rendered web pages")
     parser.add_argument("--port", "-p", default="1234", help="The port the server will bind to")
+    args = parser.parse_args()
+
     run_server(args.port)
 
- __name__ == "__main__" :
-     cli()
+
+if __name__ == "__main__" :
+    cli()
