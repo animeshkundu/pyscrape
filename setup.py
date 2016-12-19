@@ -1,6 +1,15 @@
-from distutils.core import setup, Command
+#!/usr/bin/env python
 
-setup(name='pyscrape',
+try:
+    from setuptools import setup, find_packages
+except ImportError:
+    from ez_setup import use_setuptools
+    use_setuptools()
+    from setuptools import setup, find_packages
+
+
+setup(
+      name='pyscrape',
       version='0.0.1',
       description='A lightweight Javascript-aware, headless web scraping library for Python',
       author='Agix',
@@ -8,6 +17,7 @@ setup(name='pyscrape',
       license='Apache 2.0',
       url='https://github.com/animeshkundu/pyscrape',
       packages=['pyscrape'],
+      scripts=[],
       install_requires=[
           'webkit_server>=1.0', 
           'lxml', 
