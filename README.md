@@ -11,6 +11,7 @@ PyPI package - [scrapejs](https://pypi.python.org/pypi/scrapejs)
 
 
 ## Installation
+sudo apt-get install qt5-default libqt5webkit5-dev build-essential python-lxml xvfb
 
 pip install scrapejs
 
