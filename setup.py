@@ -9,13 +9,14 @@ except ImportError:
 
 
 setup(
-      name='pyscrape',
+      name='scrapejs',
       version='0.0.1',
       description='A lightweight Javascript-aware, headless web scraping library for Python',
       author='Agix',
       author_email='anik.edu@gmail.com',
       license='Apache 2.0',
       url='https://github.com/animeshkundu/pyscrape',
+      long_description=open('README.md').read(),
       packages=['pyscrape'],
       scripts=[],
       install_requires=[
