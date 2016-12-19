@@ -10,7 +10,7 @@ except ImportError:
 
 setup(
       name='scrapejs',
-      version='0.0.1',
+      version='0.0.1.1',
       description='A lightweight Javascript-aware, headless web scraping library for Python',
       author='Agix',
       author_email='anik.edu@gmail.com',
