@@ -1,4 +1,5 @@
 import sys
+import time
 import tornado.gen
 import tornado.web
 import tornado.ioloop
@@ -34,13 +35,19 @@ class ScrapeHandler(tornado.web.RequestHandler) :
     @tornado.concurrent.run_on_executor
     def worker(self, url) :
         r = None
+        t = time.time()
         if url :
             s = session.Session()
             s.set_header('User-Agent', self.ua.random)
+            s.set_attribute('auto_load_images', False)
+            s.set_timeout(29)
+
             s.visit(url)
             r = s.body()
             s.reset()
-        print url, len(r)
+
+        t = time.time() - t
+        print "%s | %d characters | %f seconds" % (url, len(r), t)
         return r
 
     @tornado.gen.coroutine
