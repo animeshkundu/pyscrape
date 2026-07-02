@@ -1,0 +1,54 @@
+# PREPARED — GitHub Pages / docs deployment workflow.
+#
+# This workflow is READY but NOT enabled. To deploy docs:
+#   1. Enable GitHub Pages in the repository Settings → Pages
+#      (Source: GitHub Actions).
+#   2. Trigger this workflow manually via the Actions tab → "Docs" → Run workflow,
+#      or uncomment the 'push' trigger block below.
+#
+# Nothing is deployed until those steps are taken by the repository owner.
+name: Docs
+
+on:
+  workflow_dispatch:  # manual trigger only (owner must run explicitly)
+
+  # Uncomment the block below to auto-deploy docs on every tag push:
+  # push:
+  #   tags:
+  #     - "v*"
+
+jobs:
+  build-and-deploy:
+    name: Build and deploy documentation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install docs dependencies
+        run: pip install -e ".[dev]" mkdocs mkdocs-material
+
+      - name: Build docs site
+        run: mkdocs build --strict
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/
+
+      # Uncomment to actually deploy (requires Pages to be enabled first):
+      # - name: Deploy to GitHub Pages
+      #   id: deployment
+      #   uses: actions/deploy-pages@v4

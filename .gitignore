@@ -4,4 +4,11 @@
 MANIFEST
 /dist
 /build
-
+/site
+/.eggs
+*.egg-info/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
