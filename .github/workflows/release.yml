@@ -1,0 +1,69 @@
+# PREPARED — tag-triggered PyPI release workflow.
+#
+# This workflow is READY but NOT enabled. To publish a release:
+#   1. Ensure a LICENSE file has been committed (see PR description).
+#   2. Create a PyPI API token and store it as the repository secret PYPI_API_TOKEN
+#      (or configure Trusted Publishing at https://pypi.org/manage/account/publishing/).
+#   3. Add the 'pypi' GitHub environment (Settings → Environments) with any
+#      required approval rules.
+#   4. Push a tag matching 'v*' — e.g.:  git tag v2.0.0 && git push origin v2.0.0
+#
+# Nothing is published until those steps are taken by the repository owner.
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Build source distribution and wheel
+  # ---------------------------------------------------------------------------
+  build:
+    name: Build distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # full history so setuptools-scm works if used later
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build frontend
+        run: pip install build
+
+      - name: Build sdist and wheel
+        run: python -m build
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  # ---------------------------------------------------------------------------
+  # Publish to PyPI (requires 'pypi' environment + OIDC Trusted Publishing or token)
+  # ---------------------------------------------------------------------------
+  publish:
+    name: Publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write  # required for OIDC Trusted Publishing
+
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        # To use a token instead of Trusted Publishing, uncomment:
+        # with:
+        #   password: ${{ secrets.PYPI_API_TOKEN }}

@@ -1,7 +1,11 @@
-import time
-import lxml.html
+"""Mixin classes for CSS/XPath selection and wait helpers."""
 
-class SelectionMixin(object):
+from __future__ import annotations
+
+import time
+
+
+class SelectionMixin:
     def css(self, css):
         return self.css(css)
 
@@ -12,19 +16,19 @@ class SelectionMixin(object):
         return self._first_or_none(self.xpath(xpath))
 
     def parent(self):
-        return self.at_xpath('..')
+        return self.at_xpath("..")
 
     def children(self):
-        return self.xpath('*')
+        return self.xpath("*")
 
     def form(self):
         return self.at_xpath("ancestor::form")
 
-    def _first_or_none(self, list):
-        return list[0] if list else None
+    def _first_or_none(self, lst):
+        return lst[0] if lst else None
 
 
-class AttributeMixin(object):
+class AttributeMixin:
     def __getitem__(self, attr):
         return self.get_attr(attr)
 
@@ -32,8 +36,10 @@ class AttributeMixin(object):
         self.set_attr(attr, value)
 
 
-class HtmlParsingMixin(object):
+class HtmlParsingMixin:
     def document(self):
+        import lxml.html
+
         return lxml.html.document_fromstring(self.body())
 
 
@@ -44,15 +50,16 @@ DEFAULT_AT_TIMEOUT = 1
 
 
 class WaitTimeoutError(Exception):
-    """ Raised when a wait times out """
+    """Raised when a wait times out"""
 
 
 class WaitMixin(SelectionMixin):
-    def wait_for(self,
-            condition,
-            interval = DEFAULT_WAIT_INTERVAL,
-            timeout  = DEFAULT_WAIT_TIMEOUT):
-
+    def wait_for(
+        self,
+        condition,
+        interval=DEFAULT_WAIT_INTERVAL,
+        timeout=DEFAULT_WAIT_TIMEOUT,
+    ):
         start = time.time()
 
         # at least execute the check once!
@@ -68,7 +75,7 @@ class WaitMixin(SelectionMixin):
             # wait a bit
             time.sleep(interval)
 
-        # timeout occured!
+        # timeout occurred
         raise WaitTimeoutError("wait_for timed out")
 
     def wait_for_safe(self, *args, **kw):
@@ -80,12 +87,16 @@ class WaitMixin(SelectionMixin):
     def wait_while(self, condition, *args, **kw):
         return self.wait_for(lambda: not condition(), *args, **kw)
 
-    def at_css(self, css, timeout = DEFAULT_AT_TIMEOUT, **kw):
-        return self.wait_for_safe(lambda: super(WaitMixin, self).at_css(css),
-                timeout = timeout,
-                **kw)
+    def at_css(self, css, timeout=DEFAULT_AT_TIMEOUT, **kw):
+        return self.wait_for_safe(
+            lambda: super().at_css(css),
+            timeout=timeout,
+            **kw,
+        )
 
-    def at_xpath(self, xpath, timeout = DEFAULT_AT_TIMEOUT, **kw):
-        return self.wait_for_safe(lambda: super(WaitMixin, self).at_xpath(xpath),
-                timeout = timeout,
-                **kw)
+    def at_xpath(self, xpath, timeout=DEFAULT_AT_TIMEOUT, **kw):
+        return self.wait_for_safe(
+            lambda: super().at_xpath(xpath),
+            timeout=timeout,
+            **kw,
+        )

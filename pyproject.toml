@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyscrape"
+version = "2.0.0"
+description = "A lightweight Python 3 web scraping library (requests+lxml core; Playwright optional)"
+readme = "README.md"
+requires-python = ">=3.9"
+# NOTE: No LICENSE file exists in this repository yet.
+# The repository owner must choose and commit an open-source license before publishing to PyPI.
+# (The old setup.py listed "Apache 2.0" but no LICENSE file was ever committed.)
+authors = [{ name = "Agix", email = "anik.edu@gmail.com" }]
+keywords = ["scraping", "web", "html", "playwright", "lxml", "requests"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "requests>=2.31",
+    "lxml>=5.0",
+    "cssselect>=1.2",
+    "flask>=3.0",
+]
+
+[project.optional-dependencies]
+js = ["playwright>=1.40"]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.4",
+]
+
+[project.urls]
+Homepage = "https://github.com/animeshkundu/pyscrape"
+Repository = "https://github.com/animeshkundu/pyscrape"
+Issues = "https://github.com/animeshkundu/pyscrape/issues"
+
+[project.scripts]
+pyscrape = "pyscrape:cli"
+pyrun = "pyscrape:http"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["pyscrape*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP"]
+ignore = ["E501", "ANN204"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
