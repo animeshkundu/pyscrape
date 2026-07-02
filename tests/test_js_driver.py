@@ -14,14 +14,6 @@ import pytest
 import pyscrape.js_driver as js_driver_module
 from pyscrape.js_driver import PlaywrightDriver, _require_playwright
 
-# Detect whether playwright is actually installed (used to conditionally skip)
-try:
-    import playwright  # noqa: F401
-
-    _PLAYWRIGHT_INSTALLED = True
-except ImportError:
-    _PLAYWRIGHT_INSTALLED = False
-
 # ---------------------------------------------------------------------------
 # Import-guard tests — run unconditionally (no playwright required)
 # ---------------------------------------------------------------------------
@@ -70,8 +62,8 @@ def test_playwright_driver_body_outside_context_raises() -> None:
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.skipif(not _PLAYWRIGHT_INSTALLED, reason="Requires pyscrape[js]")
 def test_playwright_driver_fetches_fixture(fixture_server: str) -> None:
+    pytest.importorskip("playwright")
     with PlaywrightDriver() as driver:
         driver.visit(fixture_server)
         html = driver.body()

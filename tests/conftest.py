@@ -44,3 +44,5 @@ def fixture_server() -> str:
     thread.start()
     yield f"http://127.0.0.1:{port}"
     server.shutdown()
+    thread.join(timeout=2)
+    server.server_close()

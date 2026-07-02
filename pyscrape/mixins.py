@@ -7,7 +7,7 @@ import time
 
 class SelectionMixin:
     def css(self, css):
-        return self.css(css)
+        return self.cssselect(css)
 
     def at_css(self, css):
         return self._first_or_none(self.css(css))

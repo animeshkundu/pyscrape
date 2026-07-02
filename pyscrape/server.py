@@ -13,6 +13,7 @@ import time
 
 from flask import Flask, jsonify, request
 
+from .driver import FetchError
 from .session import Session
 
 log = logging.getLogger(__name__)
@@ -47,13 +48,17 @@ def scrape():  # type: ignore[return]
 
     t = time.time()
     s = Session()
-    s.visit(url)
-    body = s.body()
+    try:
+        s.visit(url)
+        body = s.body()
+    except FetchError as exc:
+        log.warning("Failed to fetch %s: %s", url, exc)
+        return jsonify({"error": "Failed to fetch URL"}), 502
     elapsed = time.time() - t
     log.info("%s | %d chars | %.3fs", url, len(body), elapsed)
     return body, 200, {"Content-Type": "text/html; charset=utf-8"}
 
 
-def run_server(port: int = 1234, debug: bool = False) -> None:
+def run_server(port: int = 1234, debug: bool = False, host: str = "127.0.0.1") -> None:
     """Start the HTTP scraping server on *port*."""
-    app.run(host="0.0.0.0", port=port, debug=debug)
+    app.run(host=host, port=port, debug=debug)

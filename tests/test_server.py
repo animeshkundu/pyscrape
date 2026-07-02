@@ -9,7 +9,9 @@ from __future__ import annotations
 
 import pytest
 
+from pyscrape.driver import FetchError
 from pyscrape.server import app as flask_app
+from pyscrape.server import run_server
 
 
 @pytest.fixture(scope="module")
@@ -87,3 +89,24 @@ def test_scrape_post_json(client, fixture_server: str) -> None:  # noqa: ANN001
 def test_scrape_post_missing_url_returns_400(client) -> None:  # noqa: ANN001
     r = client.post("/scrape", data={})
     assert r.status_code == 400
+
+
+def test_scrape_get_fetch_error_returns_502(client, monkeypatch) -> None:  # noqa: ANN001
+    def _raise_fetch_error(_self, _url: str) -> None:
+        raise FetchError("network down")
+
+    monkeypatch.setattr("pyscrape.session.Session.visit", _raise_fetch_error)
+    r = client.get("/scrape", query_string={"url": "http://example.invalid"})
+    assert r.status_code == 502
+    assert r.get_json()["error"] == "Failed to fetch URL"
+
+
+def test_run_server_defaults_to_localhost(monkeypatch) -> None:  # noqa: ANN001
+    called = {}
+
+    def _fake_run(**kwargs):  # noqa: ANN003
+        called.update(kwargs)
+
+    monkeypatch.setattr("pyscrape.server.app.run", _fake_run)
+    run_server()
+    assert called["host"] == "127.0.0.1"
